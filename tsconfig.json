@@ -21,6 +21,10 @@
     "strict": true,
     "target": "es2018",
     "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@utils/*": ["utils/*"]
+    },
     "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

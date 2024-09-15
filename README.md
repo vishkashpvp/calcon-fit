@@ -1,6 +1,6 @@
-# CalCon Fit
+# CalConFit
 
-CalCon - Calorie Conscious
+CalConFit - Calorie Conscious Fitness
 
 Minimalistic web app allows users to track their daily calorie intake, create squads, invite their friends and view their squad members' intake, built with [Next.js](https://nextjs.org), TypeScript, [Tailwind CSS](https://tailwindcss.com/), and [Prettier](https://prettier.io/).
 
