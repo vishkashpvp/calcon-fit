@@ -1,5 +1,7 @@
 import Image from "next/image";
+import { getAppName } from "@utils/env";
 
+const APP_NAME = getAppName();
 const HEADLINE = "united calories";
 
 export default function LandingPage() {
@@ -15,7 +17,7 @@ export default function LandingPage() {
           priority
         />
         <div className="mt-5 w-full md:w-1/2">
-          <h1 className="text-left text-gray-400">CalConFit - calorie consicous fitness</h1>
+          <h1 className="text-left text-gray-400">{APP_NAME} - calorie consicous fitness</h1>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-red-600 dark:text-blue-400">
             {HEADLINE}
           </h2>
