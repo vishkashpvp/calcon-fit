@@ -9,7 +9,7 @@ interface FooterProps {
 export default function Footer({ className }: FooterProps) {
   return (
     <footer className={className}>
-      <div className="container ms-5">
+      <div className="ms-5">
         <p>
           &copy; {new Date().getFullYear()} {APP_NAME}
         </p>
