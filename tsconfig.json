@@ -23,6 +23,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@lib/*": ["lib/*"],
       "@utils/*": ["utils/*"]
     },
     "plugins": [{ "name": "next" }]
