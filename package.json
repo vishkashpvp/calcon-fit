@@ -29,21 +29,23 @@
     "test-all": "npm run check-format && npm run check-lint && npm run check-types && npm run build"
   },
   "dependencies": {
+    "mongodb": "^6.9.0",
     "next": "14.2.8",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/mongodb": "^4.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.8",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^8.0.0",
     "postcss": "^8",
     "prettier": "3.3.3",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5",
-    "husky": "^8.0.0"
+    "typescript": "^5"
   }
 }
