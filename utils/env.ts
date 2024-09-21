@@ -11,3 +11,9 @@ export const getMongoDbUri = (): string => {
   if (!uri) throw new Error(getError("MONGODB_URI"));
   return uri;
 };
+
+export const getAuthSecret = (): string => {
+  const authSecret = process.env.AUTH_SECRET;
+  if (!authSecret) throw new Error(getError("AUTH_SECRET"));
+  return authSecret;
+};

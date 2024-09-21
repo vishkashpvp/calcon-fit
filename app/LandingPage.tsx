@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getAppName } from "@utils/env";
+import SignIn from "@components/SignIn";
 
 const APP_NAME = getAppName();
 const HEADLINE = "united calories";
@@ -25,6 +26,7 @@ export default function LandingPage() {
             track your friends&#39; group calories effortlessly & boost motivation together! <br />
             subscribe for latest updates
           </p>
+          <SignIn />
         </div>
       </main>
     </div>
