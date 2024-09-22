@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@lib/mongodb";
+import client from "@lib/mongodb";
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    await client!.db("admin").command({ ping: 1 });
+    await client.db("admin").command({ ping: 1 });
     console.log("You successfully connected to MongoDB!");
     return NextResponse.json({ message: "Database connected!" });
   } catch (error) {

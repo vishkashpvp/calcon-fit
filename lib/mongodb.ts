@@ -1,15 +1,21 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 import { getMongoDbUri } from "@utils/env";
 
 const uri = getMongoDbUri();
-const options = {};
+const options = {
+  serverApi: { version: ServerApiVersion.v1, strict: true, deprecationErrors: true },
+};
 
-let client: MongoClient | null = null;
-let clientPromise: Promise<MongoClient> | null = null;
+let client: MongoClient;
 
-if (!clientPromise) {
+if (process.env.NODE_ENV === "development") {
+  const globalWithMongo = global as typeof globalThis & { _mongoClient?: MongoClient };
+  if (!globalWithMongo._mongoClient) {
+    globalWithMongo._mongoClient = new MongoClient(uri, options);
+  }
+  client = globalWithMongo._mongoClient;
+} else {
   client = new MongoClient(uri, options);
-  clientPromise = client.connect();
 }
 
-export default clientPromise;
+export default client;
