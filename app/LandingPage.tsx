@@ -1,6 +1,7 @@
 import Image from "next/image";
+import ArrowRight from "@icons/ArrowRight";
+import Button from "@ui/Button";
 import { getAppName } from "@utils/env";
-import Button from "@components/ui/Button";
 
 const APP_NAME = getAppName();
 const HEADLINE = "united calories";
@@ -26,7 +27,11 @@ export default function LandingPage() {
             track your friends&#39; group calories effortlessly & boost motivation together! <br />
             subscribe for latest updates
           </p>
-          <Button text={"Get Started"} />
+          <Button
+            text={"Get Started"}
+            icon={<ArrowRight />}
+            iconAlign="end"
+          />
         </div>
       </main>
     </div>
