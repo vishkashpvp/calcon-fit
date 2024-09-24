@@ -1,19 +1,11 @@
 const getError = (variable: string) => `${variable} is not defined in environment variables`;
 
-export const getAppName = (): string => {
-  const appName = process.env.NEXT_PUBLIC_APP_NAME;
-  if (!appName) throw new Error(getError("NEXT_PUBLIC_APP_NAME"));
-  return appName;
+const getEnvVar = (variable: string): string => {
+  const result = process.env[variable];
+  if (!result) throw new Error(getError(variable));
+  return result;
 };
 
-export const getMongoDbUri = (): string => {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) throw new Error(getError("MONGODB_URI"));
-  return uri;
-};
-
-export const getAuthSecret = (): string => {
-  const authSecret = process.env.AUTH_SECRET;
-  if (!authSecret) throw new Error(getError("AUTH_SECRET"));
-  return authSecret;
-};
+export const getAppName = () => getEnvVar("NEXT_PUBLIC_APP_NAME");
+export const getMongoDbUri = () => getEnvVar("MONGODB_URI");
+export const getAuthSecret = () => getEnvVar("AUTH_SECRET");
