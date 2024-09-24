@@ -1,4 +1,14 @@
 import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
+import Facebook from "next-auth/providers/facebook";
 
-export default { providers: [Google] } satisfies NextAuthConfig;
+const config: NextAuthConfig = {
+  providers: [Google, Facebook],
+  callbacks: {
+    async redirect({ baseUrl }) {
+      return baseUrl + "/app";
+    },
+  },
+};
+
+export default config satisfies NextAuthConfig;

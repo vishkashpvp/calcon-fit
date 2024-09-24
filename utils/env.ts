@@ -6,6 +6,12 @@ const getEnvVar = (variable: string): string => {
   return result;
 };
 
-export const getAppName = () => getEnvVar("NEXT_PUBLIC_APP_NAME");
 export const getMongoDbUri = () => getEnvVar("MONGODB_URI");
 export const getAuthSecret = () => getEnvVar("AUTH_SECRET");
+
+// CLIENT
+export const getAppName = () => {
+  const appName = process.env.NEXT_PUBLIC_APP_NAME;
+  if (!appName) throw new Error(getError("NEXT_PUBLIC_APP_NAME"));
+  return appName;
+};

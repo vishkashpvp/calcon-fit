@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ArrowRight from "@icons/ArrowRight";
 import Button from "@ui/Button";
 import { getAppName } from "@utils/env";
@@ -7,6 +10,7 @@ const APP_NAME = getAppName();
 const HEADLINE = "united calories";
 
 export default function LandingPage() {
+  const router = useRouter();
   return (
     <div className="min-h-[calc(100dvh-160px)] md:min-h-[calc(100dvh-120px)] flex flex-col">
       <main className="items-center flex-grow px-5 md:flex md:flex-row-reverse">
@@ -29,6 +33,7 @@ export default function LandingPage() {
           </p>
           <Button
             text={"Get Started"}
+            onClick={() => router.push("/api/auth/signin")}
             icon={<ArrowRight />}
             iconAlign="end"
           />
