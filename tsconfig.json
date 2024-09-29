@@ -23,11 +23,12 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@lib/*": ["lib/*"],
-      "@utils/*": ["utils/*"],
+      "@config/*": ["config/*"],
       "@icons/*": ["app/components/icons/*"],
       "@ui/*": ["app/components/ui/*"],
       "@components/*": ["app/components/*"],
+      "@lib/*": ["lib/*"],
+      "@utils/*": ["utils/*"],
       "@/*": ["./*"]
     },
     "plugins": [{ "name": "next" }]
