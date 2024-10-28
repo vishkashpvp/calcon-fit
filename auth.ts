@@ -23,14 +23,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 return `/auth/error?error=provider&provider=${userAccount.provider}`;
               }
             }
+            user.currentWeight = existingUser.currentWeight || 0;
+            user.targetWeight = existingUser.targetWeight || 0;
+            user.height = existingUser.height || 0;
+            user.gender = existingUser.gender || "other";
+            console.log(`User exists, is logging in with the same provider: ${account.provider}`);
+          } else {
+            user.currentWeight = 0;
+            user.targetWeight = 0;
+            user.height = 0;
+            user.gender = "other";
           }
-          console.log(`User exists, is logging in with the same provider: ${account.provider}`);
         } catch (err) {
           console.error("Error fetching user by email:", err);
           return `/auth/error?error=unknown`;
         }
       }
       return true;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.currentWeight = user.currentWeight;
+        token.targetWeight = user.targetWeight;
+        token.height = user.height;
+        token.gender = user.gender;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.currentWeight = token.currentWeight ?? 0;
+      session.user.targetWeight = token.targetWeight ?? 0;
+      session.user.height = token.height ?? 0;
+      session.user.gender = token.gender ?? "other";
+      return session;
     },
   },
   pages: {
