@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import ArrowRight from "@icons/ArrowRight";
 import InfoCard from "@ui/InfoCard";
 import { getAppName } from "@utils/env";
@@ -13,7 +15,20 @@ const widgets = [
 ];
 
 export default function Page() {
+  const router = useRouter();
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (
+      session &&
+      (!session.user.currentWeight ||
+        !session.user.targetWeight ||
+        !session.user.height ||
+        !session.user.gender)
+    ) {
+      router.push("/setup");
+    }
+  }, [router, session]);
 
   if (status === "loading") return <p>Loading...</p>;
   if (!session) return <p>You are not logged in.</p>;
