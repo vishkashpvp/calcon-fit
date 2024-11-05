@@ -7,11 +7,11 @@ import ArrowRight from "@icons/ArrowRight";
 import InfoCard from "@ui/InfoCard";
 import { getAppName } from "@utils/env";
 
-const widgets = [
+const widgets = (dailyCalGoal: number) => [
   { t: "Calories Consumed", i: "700", d: "Calories you've consumed today" },
   { t: "Calories Burned", i: "0", d: "Calories burned through exercise or BMR" },
   { t: "Calories Remaining", i: "1300", d: "Calories left to meet your goal" },
-  { t: "Daily Goal", i: "2000", d: "Your target calorie intake for the day" },
+  { t: "Daily Goal", i: dailyCalGoal.toString(), d: "Your target calorie intake for the day" },
 ];
 
 export default function Page() {
@@ -33,6 +33,8 @@ export default function Page() {
   if (status === "loading") return <p>Loading...</p>;
   if (!session) return <p>You are not logged in.</p>;
 
+  const dailyCalGoal = session.user.dailyCalGoal;
+
   return (
     <>
       <h1 className="text-2xl md:text-3xl">
@@ -49,7 +51,7 @@ export default function Page() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 mt-5 md:grid-cols-3">
-        {widgets.map((widget) => (
+        {widgets(dailyCalGoal).map((widget) => (
           <InfoCard
             key={widget.t}
             title={widget.t}

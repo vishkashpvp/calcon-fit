@@ -24,6 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               }
             }
             user.id = existingUser.id;
+            user.dailyCalGoal = existingUser.dailyCalGoal;
             user.currentWeight = existingUser.currentWeight || 0;
             user.targetWeight = existingUser.targetWeight || 0;
             user.height = existingUser.height || 0;
@@ -50,6 +51,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.height = user.height;
         token.gender = user.gender;
         token.id = user.id;
+        token.dailyCalGoal = user.dailyCalGoal;
       }
       return token;
     },
@@ -59,6 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.height = token.height ?? 0;
       session.user.gender = token.gender ?? "other";
       session.user.id = token.id ?? "";
+      session.user.dailyCalGoal = token.dailyCalGoal ?? 0;
       return session;
     },
   },
