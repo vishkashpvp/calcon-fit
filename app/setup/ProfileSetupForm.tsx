@@ -6,6 +6,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@ui/Input";
 
 const schema = Yup.object({
+  age: Yup.number()
+    .required("age is required")
+    .positive("age must be a positive number")
+    .typeError("age must be a valid number"),
+
   currentWeight: Yup.number()
     .required("current weight is required")
     .positive("current weight must be a positive number")
@@ -54,6 +59,14 @@ export default function ProfileSetupForm() {
       <div className="flex flex-col items-center justify-center w-full h-screen">
         <div className="flex flex-col items-center justify-center gap-3 p-5 rounded ring-black/50 ring-1 md:w-96 md:max-w-96 dark:ring-white/50">
           <h1 className="mb-5 text-xl font-bold">final step to your squads & fitness</h1>
+          <Input
+            label="age"
+            description="enter your age."
+            placeholder="e.g., 25"
+            type="number"
+            {...register("age")}
+            error={errors.age?.message}
+          />
           <Input
             label="current weight"
             description="enter your current weight in kilograms."

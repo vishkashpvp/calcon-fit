@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     const userId = token.id;
     const data = await request.json();
     // TODO: validate these data
-    const { currentWeight, targetWeight, height } = data;
-    const result = await updateUserProfile(userId, { currentWeight, targetWeight, height });
+    const { currentWeight, targetWeight, height, age } = data;
+    const result = await updateUserProfile(userId, { currentWeight, targetWeight, height, age });
     if (result.matchedCount === 0) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
