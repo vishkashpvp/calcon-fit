@@ -35,7 +35,18 @@ export default function ProfileSetupForm() {
   });
 
   const submitFunc = async (data: SetupFormData) => {
-    console.log("Submitted data: ", data);
+    try {
+      const res = await fetch("/api/profile/setup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Network response was not ok");
+      const result = await res.json();
+      console.log("result :>> ", result);
+    } catch (err) {
+      console.log("err :>> ", err);
+    }
   };
 
   return (

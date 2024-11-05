@@ -1,4 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
+import { CONSTANTS } from "@config/constants";
 import { getMongoDbUri } from "@utils/env";
 
 const uri = getMongoDbUri();
@@ -17,5 +18,12 @@ if (process.env.NODE_ENV === "development") {
 } else {
   client = new MongoClient(uri, options);
 }
+
+const getCollection = (name: string) => {
+  return client.db(CONSTANTS.MONGODB.DATABASES.CALCONFIT).collection(name);
+};
+
+export const getUsersCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTIONS.USERS);
+export const getAccountsCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTIONS.ACCOUNTS);
 
 export default client;
