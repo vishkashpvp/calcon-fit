@@ -10,6 +10,7 @@ declare module "next-auth" {
       height: number;
       gender: "male" | "female" | "other";
       age: number;
+      dailyCalGoal: number;
     } & DefaultSession["user"];
   }
 
@@ -20,6 +21,7 @@ declare module "next-auth" {
     height: number;
     gender: "male" | "female" | "other";
     age: number;
+    dailyCalGoal: number;
   }
 }
 
@@ -31,5 +33,6 @@ declare module "next-auth/jwt" {
     height?: number;
     gender?: "male" | "female" | "other";
     age?: number;
+    dailyCalGoal?: number;
   }
 }
