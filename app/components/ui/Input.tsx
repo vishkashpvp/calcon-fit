@@ -12,17 +12,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         <Field>
-          <Label className="font-medium text-white text-sm/6">{label}</Label>
+          <Label className="font-medium text-sm/6">{label}</Label>
           {description && (
-            <Description className="text-sm/6 text-white/50">{description}</Description>
+            <Description className="text-black/50 text-sm/6 dark:text-white/50">
+              {description}
+            </Description>
           )}
           <HeadlessInput
             ref={ref}
             {...rest}
-            className={`
-              mt-1 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white
-              focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25
-            `}
+            className={`mt-1 block w-full rounded-lg border-none bg-black/10 py-1.5 px-3 text-sm/6 text-black
+            focus:outline-none focus:ring-2 ring-1 ring-black/50 dark:ring-white/50 focus:ring-black/50
+            dark:bg-white/10 dark:text-white dark:focus:ring-white/25`}
           />
           {error && <div className="text-sm text-red-500 ms-1">{error}</div>}
         </Field>

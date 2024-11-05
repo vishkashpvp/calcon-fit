@@ -52,11 +52,12 @@ export default function ProfileSetupForm() {
   return (
     <form onSubmit={handleSubmit(submitFunc)}>
       <div className="flex flex-col items-center justify-center w-full h-screen">
-        <div className="flex flex-col items-center justify-center gap-3 p-5 rounded ring-black ring-1 md:w-96 md:max-w-96 dark:ring-white/10">
+        <div className="flex flex-col items-center justify-center gap-3 p-5 rounded ring-black/50 ring-1 md:w-96 md:max-w-96 dark:ring-white/50">
           <h1 className="mb-5 text-xl font-bold">final step to your squads & fitness</h1>
           <Input
             label="current weight"
             description="enter your current weight in kilograms."
+            placeholder="e.g., 80"
             type="number"
             {...register("currentWeight")}
             error={errors.currentWeight?.message}
@@ -64,6 +65,7 @@ export default function ProfileSetupForm() {
           <Input
             label="target weight"
             description="enter your target weight in kilograms."
+            placeholder="e.g., 70"
             type="number"
             {...register("targetWeight")}
             error={errors.targetWeight?.message}
@@ -71,13 +73,14 @@ export default function ProfileSetupForm() {
           <Input
             label="height"
             description="enter your height in centimeters."
+            placeholder="e.g., 156"
             type="number"
             {...register("height")}
             error={errors.height?.message}
           />
           <button
             type="submit"
-            className="w-full p-2 mt-5 rounded ring-1 ring-black dark:ring-white/10">
+            className="w-full p-2 mt-5 rounded-lg ring-1 ring-black/50 dark:ring-white/50">
             submit
           </button>
         </div>
