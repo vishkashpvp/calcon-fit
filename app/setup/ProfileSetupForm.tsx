@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { CustomError } from "@lib/errors";
 import Input from "@ui/Input";
 
 const schema = Yup.object({
@@ -46,7 +47,7 @@ export default function ProfileSetupForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Network response was not ok");
+      if (!res.ok) throw new CustomError("Network response was not ok", res.status);
       const result = await res.json();
       console.log("result :>> ", result);
     } catch (err) {

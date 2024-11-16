@@ -1,8 +1,8 @@
-const getError = (variable: string) => `${variable} is not defined in environment variables`;
+import { EnvironmentVariableError } from "@lib/errors";
 
 const getEnvVar = (variable: string): string => {
   const result = process.env[variable];
-  if (!result) throw new Error(getError(variable));
+  if (!result) throw new EnvironmentVariableError(variable);
   return result;
 };
 
@@ -12,6 +12,6 @@ export const getAuthSecret = () => getEnvVar("AUTH_SECRET");
 // CLIENT
 export const getAppName = () => {
   const appName = process.env.NEXT_PUBLIC_APP_NAME;
-  if (!appName) throw new Error(getError("NEXT_PUBLIC_APP_NAME"));
+  if (!appName) throw new EnvironmentVariableError("NEXT_PUBLIC_APP_NAME");
   return appName;
 };
