@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { CONSTANTS } from "@config/constants";
 import client from "./mongodb";
 
-export async function getAccountByUser(userId: string) {
+export async function getAccountByUserId(userId: string) {
   try {
     const db = (await client.connect()).db();
     const account = await db

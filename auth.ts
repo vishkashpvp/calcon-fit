@@ -1,8 +1,8 @@
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
-import { getAccountByUser } from "@lib/dbFuncs";
-import client from "@lib/mongodb";
+import { getAccountByUserId } from "@lib/db/account";
+import client from "@lib/db/mongodb";
 
 const mongoDBAdapter = MongoDBAdapter(client);
 
@@ -16,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           const existingUser = await mongoDBAdapter.getUserByEmail(user.email);
           if (existingUser) {
-            const userAccount = await getAccountByUser(existingUser.id);
+            const userAccount = await getAccountByUserId(existingUser.id);
             if (userAccount) {
               if (userAccount.provider !== account.provider) {
                 console.log(`User exists, but provider ${account.provider} is new`);

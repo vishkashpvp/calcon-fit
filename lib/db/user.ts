@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getUsersCollection } from "@lib/mongodb";
+import { getUsersCollection } from "@lib/db/mongodb";
 import { calculateDailyCalGoal } from "@utils/calc";
 
 type TempUserProfile = { age: number; currentWeight: number; targetWeight: number; height: number };
