@@ -25,5 +25,7 @@ const getCollection = (name: string) => {
 
 export const getUsersCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTIONS.USERS);
 export const getAccountsCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTIONS.ACCOUNTS);
+export const getConfigurationsCollection = () =>
+  getCollection(CONSTANTS.MONGODB.COLLECTIONS.CONFIGURATIONS);
 
 export default client;

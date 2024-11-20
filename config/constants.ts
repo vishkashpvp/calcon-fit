@@ -6,6 +6,7 @@ export const CONSTANTS = {
     },
     COLLECTIONS: {
       ACCOUNTS: "accounts",
+      CONFIGURATIONS: "configurations",
       USERS: "users",
     },
   },
