@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ERROR_MESSAGES } from "@config/errorMessages";
 import { getConfigurationsCollection } from "@lib/db/mongodb";
-import { CustomError, NotFoundError } from "@lib/errors";
+import { NotFoundError } from "@lib/errors";
+import { formatErrorResponse } from "@utils/error-handler";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,9 +14,6 @@ export async function GET(request: NextRequest) {
     const result = name ? data[0] : data.map((doc) => doc.name);
     return NextResponse.json(result, { status: 200 });
   } catch (err) {
-    if (err instanceof CustomError) {
-      return NextResponse.json({ message: err.message }, { status: err.status });
-    }
-    return NextResponse.json({ message: ERROR_MESSAGES.INTERNAL_SERVER }, { status: 500 });
+    return formatErrorResponse(err);
   }
 }
