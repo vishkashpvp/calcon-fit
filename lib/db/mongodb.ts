@@ -27,5 +27,7 @@ export const getUsersCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTI
 export const getAccountsCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTIONS.ACCOUNTS);
 export const getConfigurationsCollection = () =>
   getCollection(CONSTANTS.MONGODB.COLLECTIONS.CONFIGURATIONS);
+export const getNutrionInfoCollection = () =>
+  getCollection(CONSTANTS.MONGODB.COLLECTIONS.NUTRITION_INFO);
 
 export default client;

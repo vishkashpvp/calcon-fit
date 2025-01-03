@@ -8,6 +8,7 @@ export const CONSTANTS = {
       ACCOUNTS: "accounts",
       CONFIGURATIONS: "configurations",
       USERS: "users",
+      NUTRITION_INFO: "nutrition_info",
     },
   },
 };
