@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ArrowRight from "@icons/ArrowRight";
 import InfoCard from "@ui/InfoCard";
@@ -13,6 +15,10 @@ const widgets = (dailyCalGoal: number) => [
   { t: "Calories Remaining", i: "1300", d: "Calories left to meet your goal" },
   { t: "Daily Goal", i: dailyCalGoal.toString(), d: "Your target calorie intake for the day" },
 ];
+
+// TODO: use #212121 fo InfoCard dark background
+// TODO: replace `TEMP_IMG_PATH` with some proper icon/image
+const TEMP_IMG_PATH = "/images/kitchen-scale.png";
 
 export default function Page() {
   const router = useRouter();
@@ -37,20 +43,20 @@ export default function Page() {
 
   return (
     <>
-      <h1 className="text-2xl md:text-3xl">
-        welcome to {getAppName()} <br />
-        <span className="text-4xl md:text-5xl">{session.user.name}</span>
-      </h1>
-
-      <div className="p-3 mt-5 bg-red-600">
-        <p>Your email: {session.user.email}</p>
-        <p>Current Weight: {session.user.currentWeight}</p>
-        <p>Target Weight: {session.user.targetWeight}</p>
-        <p>Height: {session.user.height}</p>
-        <p>Gender: {session.user.gender}</p>
+      <div className="fixed flex items-center justify-between w-full p-3 px-5 bg-white border-b-2 border-b-blue-600 dark:bg-[#212121]">
+        <h1 className="text-2xl font-bold md:text-3xl">{getAppName()}</h1>
+        <Link href="/app/profile">
+          <Image
+            src={session.user.image || TEMP_IMG_PATH}
+            alt="profile image"
+            width={48}
+            height={48}
+            className="w-10 rounded-3xl"
+          />
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 mt-5 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 p-5 pt-24 md:grid-cols-3">
         {widgets(dailyCalGoal).map((widget) => (
           <InfoCard
             key={widget.t}
