@@ -16,7 +16,6 @@ const widgets = (dailyCalGoal: number) => [
   { t: "Daily Goal", i: dailyCalGoal.toString(), d: "Your target calorie intake for the day" },
 ];
 
-// TODO: use #212121 fo InfoCard dark background
 // TODO: replace `TEMP_IMG_PATH` with some proper icon/image
 const TEMP_IMG_PATH = "/images/kitchen-scale.png";
 
@@ -43,7 +42,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="fixed flex items-center justify-between w-full p-3 px-5 bg-white border-b-2 border-b-blue-600 dark:bg-[#212121]">
+      <div className="fixed flex items-center justify-between w-full p-3 px-5 border-b-2">
         <h1 className="text-2xl font-bold md:text-3xl">{getAppName()}</h1>
         <Link href="/app/profile">
           <Image
