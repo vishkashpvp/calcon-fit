@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAppName } from "@utils/env";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalorieTracker } from "./CalorieTracker";
 
@@ -34,15 +35,18 @@ export default function Page() {
     <>
       <div className="flex items-center justify-between w-full p-3 px-5 border-b-2">
         <h1 className="text-2xl font-bold md:text-3xl">{getAppName()}</h1>
-        <Link href="/app/profile">
-          <Avatar>
-            <AvatarImage
-              src={session.user.image || TEMP_IMG_PATH}
-              alt="profile image"
-            />
-            <AvatarFallback>CCF</AvatarFallback>
-          </Avatar>
-        </Link>
+        <div className="flex items-center gap-5">
+          <ThemeToggle />
+          <Link href="/app/profile">
+            <Avatar>
+              <AvatarImage
+                src={session.user.image || TEMP_IMG_PATH}
+                alt="profile image"
+              />
+              <AvatarFallback>CCF</AvatarFallback>
+            </Avatar>
+          </Link>
+        </div>
       </div>
       <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-3">
         <CalorieTracker
