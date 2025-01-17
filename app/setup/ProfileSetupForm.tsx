@@ -58,7 +58,7 @@ export default function ProfileSetupForm() {
   return (
     <form onSubmit={handleSubmit(submitFunc)}>
       <div className="flex flex-col items-center justify-center w-full h-screen">
-        <div className="flex flex-col items-center justify-center gap-3 p-5 rounded ring-black/50 ring-1 md:w-96 md:max-w-96 dark:ring-white/50">
+        <div className="flex flex-col items-center justify-center gap-3 p-5 rounded ring-1 md:w-96 md:max-w-96">
           <h1 className="mb-5 text-xl font-bold">final step to your squads & fitness</h1>
           <Input
             label="age"
@@ -94,7 +94,7 @@ export default function ProfileSetupForm() {
           />
           <button
             type="submit"
-            className="w-full p-2 mt-5 rounded-lg ring-1 ring-black/50 dark:ring-white/50">
+            className="w-full p-2 mt-5 rounded-lg ring-1">
             submit
           </button>
         </div>
