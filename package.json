@@ -48,7 +48,8 @@
     "react-hook-form": "^7.53.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/mongodb": "^4.0.6",

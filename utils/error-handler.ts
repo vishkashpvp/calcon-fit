@@ -3,8 +3,10 @@ import { ERROR_MESSAGES } from "@config/errorMessages";
 import { CustomError } from "@lib/errors";
 
 export function formatErrorResponse(err: unknown): NextResponse {
-  if (err instanceof CustomError) {
-    return NextResponse.json({ message: err.message }, { status: err.status });
-  }
-  return NextResponse.json({ message: ERROR_MESSAGES.INTERNAL_SERVER }, { status: 500 });
+  const {
+    message = ERROR_MESSAGES.INTERNAL_SERVER,
+    status = 500,
+    errors = [],
+  } = err instanceof CustomError ? err : err instanceof Error ? { message: err.message } : {};
+  return NextResponse.json({ message, errors }, { status });
 }

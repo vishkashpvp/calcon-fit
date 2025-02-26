@@ -12,4 +12,5 @@ export const CONSTANTS = {
       MEAL_LOGS: "meal_logs",
     },
   },
+  MEAL_TYPES: ["breakfast", "lunch", "snacks", "dinner", "random"] as const,
 };
