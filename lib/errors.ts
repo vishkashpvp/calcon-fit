@@ -2,9 +2,11 @@ import { ERROR_MESSAGES } from "@config/errorMessages";
 
 export class CustomError extends Error {
   public status: number;
-  constructor(message: string, status: number = 400) {
+  public errors: unknown;
+  constructor(message: string, status: number = 400, errors: unknown = []) {
     super(message);
     this.status = status;
+    this.errors = errors;
     Object.setPrototypeOf(this, CustomError.prototype);
   }
 }
@@ -16,8 +18,8 @@ export class EnvironmentVariableError extends CustomError {
 }
 
 export class BadRequestError extends CustomError {
-  constructor(message: string = ERROR_MESSAGES.BAD_REQUEST) {
-    super(message, 400);
+  constructor(message: string = ERROR_MESSAGES.BAD_REQUEST, errors: unknown = []) {
+    super(message, 400, errors);
   }
 }
 

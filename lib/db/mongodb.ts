@@ -29,5 +29,6 @@ export const getConfigurationsCollection = () =>
   getCollection(CONSTANTS.MONGODB.COLLECTIONS.CONFIGURATIONS);
 export const getNutritionInfoCollection = () =>
   getCollection(CONSTANTS.MONGODB.COLLECTIONS.NUTRITION_INFO);
+export const getMealLogsCollection = () => getCollection(CONSTANTS.MONGODB.COLLECTIONS.MEAL_LOGS);
 
 export default client;
