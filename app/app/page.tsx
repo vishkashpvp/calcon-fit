@@ -4,10 +4,11 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Carrot, Flame, HeartCrack, Salad } from "lucide-react";
 import { getAppName } from "@utils/env";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalorieTracker } from "./CalorieTracker";
+import { Tracker } from "./Tracker";
 
 // TODO: replace `TEMP_IMG_PATH` with some proper icon/image
 const TEMP_IMG_PATH = "/images/kitchen-scale.png";
@@ -48,10 +49,33 @@ export default function Page() {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-3">
-        <CalorieTracker
+      <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2 lg:grid-cols-4">
+        <Tracker
+          label="calories"
           consumed={1200}
           goal={session.user.dailyCalGoal}
+          Icon={Flame}
+        />
+        <Tracker
+          label="protein"
+          consumed={42}
+          unit="g"
+          goal={120}
+          Icon={Salad}
+        />
+        <Tracker
+          label="carbs"
+          consumed={350}
+          unit="g"
+          goal={250}
+          Icon={Carrot}
+        />
+        <Tracker
+          label="fat"
+          consumed={22}
+          unit="g"
+          goal={50}
+          Icon={HeartCrack}
         />
       </div>
     </>
