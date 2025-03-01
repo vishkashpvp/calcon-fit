@@ -92,9 +92,7 @@ export default function ProfileSetupForm() {
             {...register("height")}
             error={errors.height?.message}
           />
-          <button
-            type="submit"
-            className="w-full p-2 mt-5 rounded-lg ring-1">
+          <button type="submit" className="w-full p-2 mt-5 rounded-lg ring-1">
             submit
           </button>
         </div>

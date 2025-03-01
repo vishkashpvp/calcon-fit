@@ -33,38 +33,14 @@ export default function Page() {
           />
         </div>
         <div className="flex flex-col gap-5 w-96">
-          <Input
-            readOnly
-            label="name"
-            value={session.user.name || ""}
-          />
-          <Input
-            readOnly
-            label="email"
-            value={session.user.email || ""}
-          />
+          <Input readOnly label="name" value={session.user.name || ""} />
+          <Input readOnly label="email" value={session.user.email || ""} />
           <div className="flex gap-5">
-            <Input
-              readOnly
-              label="current weight"
-              value={session.user.currentWeight}
-            />
-            <Input
-              readOnly
-              label="target weight"
-              value={session.user.targetWeight}
-            />
+            <Input readOnly label="current weight" value={session.user.currentWeight} />
+            <Input readOnly label="target weight" value={session.user.targetWeight} />
           </div>
-          <Input
-            readOnly
-            label="daily calorie goal"
-            value={session.user.dailyCalGoal}
-          />
-          <Input
-            readOnly
-            label="height"
-            value={session.user.height}
-          />
+          <Input readOnly label="daily calorie goal" value={session.user.dailyCalGoal} />
+          <Input readOnly label="height" value={session.user.height} />
         </div>
       </div>
     </>

@@ -40,43 +40,17 @@ export default function Page() {
           <ThemeToggle />
           <Link href="/app/profile">
             <Avatar>
-              <AvatarImage
-                src={session.user.image || TEMP_IMG_PATH}
-                alt="profile image"
-              />
+              <AvatarImage src={session.user.image || TEMP_IMG_PATH} alt="profile image" />
               <AvatarFallback>CCF</AvatarFallback>
             </Avatar>
           </Link>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2 lg:grid-cols-4">
-        <Tracker
-          label="calories"
-          consumed={1200}
-          goal={session.user.dailyCalGoal}
-          Icon={Flame}
-        />
-        <Tracker
-          label="protein"
-          consumed={42}
-          unit="g"
-          goal={120}
-          Icon={Salad}
-        />
-        <Tracker
-          label="carbs"
-          consumed={350}
-          unit="g"
-          goal={250}
-          Icon={Carrot}
-        />
-        <Tracker
-          label="fat"
-          consumed={22}
-          unit="g"
-          goal={50}
-          Icon={HeartCrack}
-        />
+        <Tracker label="calories" consumed={1200} goal={session.user.dailyCalGoal} Icon={Flame} />
+        <Tracker label="protein" consumed={42} unit="g" goal={120} Icon={Salad} />
+        <Tracker label="carbs" consumed={350} unit="g" goal={250} Icon={Carrot} />
+        <Tracker label="fat" consumed={22} unit="g" goal={50} Icon={HeartCrack} />
       </div>
     </>
   );

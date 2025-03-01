@@ -38,10 +38,7 @@ export function Tracker({ label, consumed, goal, unit, Icon }: TrackerProps) {
               {unit && unit}
             </span>
           </div>
-          <Progress
-            value={progress}
-            className={cn(isOverConsumed && "[&>*]:bg-red-600")}
-          />
+          <Progress value={progress} className={cn(isOverConsumed && "[&>*]:bg-red-600")} />
           <div className="text-xs text-gray-500 sm:text-sm dark:text-gray-400">
             {remaining}
             {unit && unit} remaining
