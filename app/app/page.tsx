@@ -4,10 +4,11 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Carrot, Flame, HeartCrack, Salad } from "lucide-react";
+import { ArrowRight, Carrot, Flame, HeartCrack, Salad } from "lucide-react";
 import { getAppName } from "@utils/env";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Tracker } from "./Tracker";
 
 // TODO: replace `TEMP_IMG_PATH` with some proper icon/image
@@ -46,7 +47,15 @@ export default function Page() {
           </Link>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2 lg:grid-cols-4">
+      <div className="flex items-center justify-between m-5 mb-0">
+        <h1 className="text-xl">dashboard</h1>
+        <Button asChild>
+          <Link href="/app/meals">
+            Add Meal <ArrowRight className="w-4 h-4" />
+          </Link>
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-2 lg:grid-cols-4">
         <Tracker label="calories" consumed={1200} goal={session.user.dailyCalGoal} Icon={Flame} />
         <Tracker label="protein" consumed={42} unit="g" goal={120} Icon={Salad} />
         <Tracker label="carbs" consumed={350} unit="g" goal={250} Icon={Carrot} />
