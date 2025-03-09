@@ -1,5 +1,8 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { MealType } from "./DialogAddFood";
+import DialogAddFood from "./DialogAddFood";
 
 interface MealItem {
   name: string;
@@ -25,22 +28,28 @@ export default function Widget({ title, items, className }: MealCardProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <>
-            {items.length === 0 ? (
-              <div className="text-center text-muted-foreground">No meals logged yet</div>
-            ) : (
-              items.map((item) => {
-                return (
-                  <div key={item.name} className="flex justify-between">
-                    <span>{item.name}</span>
-                    <span>{item.calories} cals</span>
-                  </div>
-                );
-              })
-            )}
-          </>
+          {items.length === 0 ? (
+            <div className="text-center text-muted-foreground">No meals logged yet</div>
+          ) : (
+            items.map((item, index) => (
+              <div key={`${title}-${item.name}-${index}`} className="flex justify-between">
+                <span>{item.name}</span>
+                <span>{item.calories} cals</span>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
+      <CardFooter>
+        <DialogAddFood
+          mealType={title as MealType}
+          onAddFood={(data, quantity, mealType) => {
+            console.log("meal added", data);
+            const calories = Math.round((data.calories * quantity) / 100);
+            console.log(`${mealType} -> ${quantity}g ${data.name} -> ${calories} calories`);
+          }}
+        />
+      </CardFooter>
     </Card>
   );
 }
