@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { FoodItem } from "@/data/food-database";
+// import { FoodItem } from "@/data/food-database";
 import { MealType } from "./DialogAddFood";
+import { FoodItem } from "./FoodSearchList";
 
 interface SelectedFoodViewProps {
   selectedFood: FoodItem;

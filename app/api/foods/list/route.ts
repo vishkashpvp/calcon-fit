@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
     const collection = getNutritionInfoCollection();
     const query = name ? { name: { $regex: name, $options: "i" } } : {};
-    const projection = { _id: 1, name: 1, calories: 1, isPlantBased: 1 };
+    const projection = { _id: 1, name: 1, calories: 1, isPlantBased: 1, macros: 1 };
     const [total, items] = await Promise.all([
       collection.countDocuments(query),
       collection.find(query).project(projection).skip(skip).limit(limit).toArray(),

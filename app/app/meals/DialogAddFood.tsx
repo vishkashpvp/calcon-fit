@@ -11,9 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { FoodItem } from "@/data/food-database";
-import { foodDatabase } from "@/data/food-database";
-import FoodSearchList from "./FoodSearchList";
+// import type { FoodItem } from "@/data/food-database";
+import FoodSearchList, { FoodItem } from "./FoodSearchList";
 import SelectedFoodView from "./SelectedFoodView";
 
 export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
@@ -35,10 +34,6 @@ export default function DialogAddFood({
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [quantity, setQuantity] = useState(100);
   const [open, setOpen] = useState(false);
-
-  const filteredFoodItems = foodDatabase.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleConfirmAdd = () => {
     if (selectedFood && quantity > 0) {
@@ -67,8 +62,7 @@ export default function DialogAddFood({
           <FoodSearchList
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            foodItems={filteredFoodItems}
-            onSelectFood={setSelectedFood}
+            onSelectFood={(food) => setSelectedFood(food)}
           />
         ) : (
           <SelectedFoodView
