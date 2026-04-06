@@ -1,73 +1,102 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { prisma } from "@/lib/db/prisma";
+import { createMealSchema, dateSchema } from "@/lib/validation/schemas";
+import { GAMIFICATION } from "@/config/constants";
 import { MESSAGES } from "@/config/messages";
-import { getMealLogsCollection } from "@/lib/db/mongodb";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "@lib/errors";
-import { createMealPayloadSchema, dateSchema } from "@lib/validation/schemas";
-import { getAuthSecret } from "@utils/env";
-import { formatErrorResponse } from "@utils/error-handler";
 
-const mealLogsCollection = getMealLogsCollection();
-
-export async function GET(req: NextRequest) {
-  try {
-    const token = await getToken({ req, secret: getAuthSecret() });
-    if (!token || !token.id) throw new UnauthorizedError();
-    const userId = token.id;
-    const { searchParams } = new URL(req.url);
-    const date = searchParams.get("date")?.trim();
-    if (!date || !dateSchema.safeParse(date).success) {
-      throw new BadRequestError(MESSAGES.INVALID_DATE_FORMAT);
-    }
-    const meal = await mealLogsCollection.findOne({ userId, date });
-    if (!meal) throw new NotFoundError(MESSAGES.MEAL_LOG_NOT_FOUND);
-    return NextResponse.json(meal, { status: 200 });
-  } catch (err) {
-    return formatErrorResponse(err);
+export async function GET(request: NextRequest) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
   }
+
+  const date = request.nextUrl.searchParams.get("date");
+  const parsed = dateSchema.safeParse(date);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+  }
+
+  const meals = await prisma.mealLog.findMany({
+    where: { userId: session.user.id, date: parsed.data },
+    include: { foods: true },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return NextResponse.json({ data: meals });
 }
 
-// TODO: calculate calories at mealType level and also totalCalories
-export async function POST(req: NextRequest) {
-  try {
-    const token = await getToken({ req, secret: getAuthSecret() });
-    if (!token || !token.id) throw new UnauthorizedError();
-    const userId = token.id;
-    const body = await req.json().catch(() => null);
-    const parsed = createMealPayloadSchema.safeParse(body);
-    if (!parsed.success) throw new BadRequestError(MESSAGES.MEAL_LOG_DATA_INVALID);
-    const { mealType, foods, customCalories } = parsed.data;
-    const date = new Date().toISOString().split("T")[0];
-    const existingMealLog = await mealLogsCollection.findOne({ userId, date });
-    if (!existingMealLog) {
-      const mealLog = {
-        userId,
-        date,
-        meals: { [mealType]: { foods, calories: 0 } },
-        customCalories: { [mealType]: customCalories ?? 0 },
-        totalCalories: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      await mealLogsCollection.insertOne(mealLog);
-      return NextResponse.json({ mealLog, message: MESSAGES.MEAL_LOG_CREATED }, { status: 201 });
-    }
-    if (existingMealLog.meals?.[mealType]) {
-      throw new BadRequestError(MESSAGES.MEAL_LOG_ALREADY_EXISTS);
-    }
-    await mealLogsCollection.updateOne(
-      { userId, date },
-      {
-        $set: {
-          [`meals.${mealType}`]: { foods, calories: 0 },
-          [`customCalories.${mealType}`]: customCalories ?? 0,
-          totalCalories: 0,
-          updatedAt: new Date(),
-        },
-      }
-    );
-    return NextResponse.json({ message: MESSAGES.MEAL_LOG_UPDATED }, { status: 200 });
-  } catch (err) {
-    return formatErrorResponse(err);
+export async function POST(request: NextRequest) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
   }
+
+  const body = await request.json();
+  const parsed = createMealSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues.map((e) => e.message).join(", ") },
+      { status: 400 },
+    );
+  }
+
+  const { date, mealType, foods } = parsed.data;
+
+  const totalCalories = foods.reduce((s, f) => s + Math.round(f.calories * f.quantity), 0);
+  const totalProtein = foods.reduce((s, f) => s + Math.round(f.protein * f.quantity), 0);
+  const totalCarbs = foods.reduce((s, f) => s + Math.round(f.carbs * f.quantity), 0);
+  const totalFat = foods.reduce((s, f) => s + Math.round(f.fat * f.quantity), 0);
+
+  const mealLog = await prisma.mealLog.create({
+    data: {
+      userId: session.user.id,
+      date,
+      mealType,
+      totalCalories,
+      totalProtein,
+      totalCarbs,
+      totalFat,
+      foods: {
+        create: foods.map((f) => ({
+          foodId: f.foodId,
+          name: f.name,
+          quantity: f.quantity,
+          calories: Math.round(f.calories * f.quantity),
+          protein: Math.round(f.protein * f.quantity),
+          carbs: Math.round(f.carbs * f.quantity),
+          fat: Math.round(f.fat * f.quantity),
+        })),
+      },
+    },
+    include: { foods: true },
+  });
+
+  const today = new Date().toISOString().split("T")[0];
+  if (date === today) {
+    const profile = await prisma.userProfile.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (profile) {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+      const isStreakContinued = profile.lastLogDate === yesterday || profile.lastLogDate === today;
+      const isNewDay = profile.lastLogDate !== today;
+
+      const newStreak = isNewDay ? (isStreakContinued ? profile.streak + 1 : 1) : profile.streak;
+
+      await prisma.userProfile.update({
+        where: { userId: session.user.id },
+        data: {
+          xp: { increment: GAMIFICATION.XP_PER_MEAL_LOG },
+          lastLogDate: today,
+          streak: newStreak,
+          longestStreak: Math.max(newStreak, profile.longestStreak),
+        },
+      });
+    }
+  }
+
+  return NextResponse.json({ data: mealLog }, { status: 201 });
 }

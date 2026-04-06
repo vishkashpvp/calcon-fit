@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Better Auth tables ───
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+  profile  UserProfile?
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+// ─── App tables ───
+
+model UserProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentWeight     Float    @default(0)
+  targetWeight      Float    @default(0)
+  startWeight       Float    @default(0)
+  height            Float    @default(0)
+  age               Int      @default(0)
+  gender            String   @default("other")
+  activityLevel     Float    @default(1.2)
+  dailyCalGoal      Int      @default(0)
+  xp                Int      @default(0)
+  level             Int      @default(1)
+  streak            Int      @default(0)
+  longestStreak     Int      @default(0)
+  lastLogDate       String?
+  isProfileComplete Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  weightLogs WeightLog[]
+
+  @@map("user_profiles")
+}
+
+model WeightLog {
+  id        String      @id @default(cuid())
+  userId    String
+  profile   UserProfile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  weight    Float
+  note      String?
+  loggedAt  DateTime    @default(now())
+  createdAt DateTime    @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("weight_logs")
+}
+
+model MealLog {
+  id            String   @id @default(cuid())
+  userId        String
+  date          String
+  mealType      String
+  totalCalories Int      @default(0)
+  totalProtein  Int      @default(0)
+  totalCarbs    Int      @default(0)
+  totalFat      Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  foods MealFood[]
+
+  @@index([userId, date])
+  @@map("meal_logs")
+}
+
+model MealFood {
+  id        String  @id @default(cuid())
+  mealLogId String
+  mealLog   MealLog @relation(fields: [mealLogId], references: [id], onDelete: Cascade)
+  foodId    String
+  name      String
+  quantity  Float
+  calories  Int
+  protein   Int
+  carbs     Int
+  fat       Int
+
+  @@map("meal_foods")
+}
+
+model FoodItem {
+  id          String @id @default(cuid())
+  name        String
+  calories    Int
+  protein     Float
+  carbs       Float
+  fat         Float
+  servingSize String @default("1 serving")
+  category    String @default("general")
+
+  @@map("food_items")
+}
+
+// ─── Squads ───
+
+model Squad {
+  id          String        @id @default(cuid())
+  name        String
+  code        String        @unique
+  description String?
+  createdBy   String
+  maxMembers  Int           @default(10)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  members SquadMember[]
+
+  @@map("squads")
+}
+
+model SquadMember {
+  id       String   @id @default(cuid())
+  squadId  String
+  squad    Squad    @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  userId   String
+  role     String   @default("member")
+  joinedAt DateTime @default(now())
+
+  @@unique([squadId, userId])
+  @@map("squad_members")
+}

@@ -1,13 +1,23 @@
 export const MESSAGES = {
-  // meal related
-  MEAL_LOG_CREATED: "Meal log created",
-  MEAL_LOG_UPDATED: "Meal log updated",
-  MEAL_LOG_DELETED: "Meal log deleted",
-  MEAL_LOG_NOT_FOUND: "No meal log found",
-  MEAL_LOG_ALREADY_EXISTS: "Meal log already exists for this date",
-  MEAL_LOG_DATA_INVALID: "Invalid meal log data provided",
-  MEAL_LOG_MIN_ONE_FOOD: "At least one food item must be present",
-
-  // other
-  INVALID_DATE_FORMAT: "Invalid date format. Use YYYY-MM-DD",
-};
+  AUTH: {
+    UNAUTHORIZED: "You must be signed in to access this resource.",
+    UNKNOWN_ERROR: "Something went wrong during authentication.",
+  },
+  VALIDATION: {
+    INVALID_DATE_FORMAT: "Date must be in YYYY-MM-DD format.",
+    MEAL_MIN_ONE_FOOD: "At least one food item is required.",
+    REQUIRED_FIELD: "This field is required.",
+    INVALID_NUMBER: "Must be a valid number.",
+    POSITIVE_NUMBER: "Must be a positive number.",
+  },
+  PROFILE: {
+    SETUP_SUCCESS: "Profile set up successfully!",
+    UPDATE_SUCCESS: "Profile updated successfully!",
+    INCOMPLETE: "Please complete your profile setup.",
+  },
+  GAMIFICATION: {
+    LEVEL_UP: "Level up! You've reached",
+    STREAK_MILESTONE: "Streak milestone!",
+    XP_EARNED: "XP earned!",
+  },
+} as const;
