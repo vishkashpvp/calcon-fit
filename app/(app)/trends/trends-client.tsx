@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { TrendingUp, Scale } from "lucide-react";
 import { PageModuleHeader } from "@/components/layout/page-module-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WeightEntry } from "@/components/weight-entry";
@@ -57,6 +56,50 @@ function MiniBarChart({
             values.filter((v) => v > 0).length,
         )
       : 0;
+  const hasData = values.some((v) => v > 0);
+
+  if (!hasData) {
+    const ghost = [
+      25, 40, 15, 55, 35, 50, 20, 45, 60, 30, 50, 25, 40, 55, 20, 35, 50, 30, 45, 25, 60, 35, 20,
+      55, 40, 30, 45, 50, 25, 35,
+    ];
+    return (
+      <div className="space-y-3">
+        <div className="text-muted-foreground flex items-center justify-between text-xs">
+          <span>
+            Avg: <strong className="text-foreground">&mdash;</strong>
+          </span>
+          {goal ? (
+            <span>
+              Goal: {goal} {unit}
+            </span>
+          ) : null}
+        </div>
+        <div className="relative" style={{ height: 120 }}>
+          <div className="flex h-full items-end gap-[2px]">
+            {(data.length > 0 ? data : Array.from({ length: 14 })).map((_, i) => (
+              <div
+                key={i}
+                className="bg-muted/15 flex-1"
+                style={{ height: `${ghost[i % ghost.length]}%` }}
+              />
+            ))}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <p className="bg-background/80 text-muted-foreground px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
+              No {dataKey} data yet &mdash; log meals to see trends
+            </p>
+          </div>
+        </div>
+        {data.length > 0 && (
+          <div className="text-muted-foreground flex justify-between text-[10px]">
+            <span>{data[0]?.label}</span>
+            <span>{data[data.length - 1]?.label}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -131,10 +174,10 @@ function WeightChart({ logs, targetWeight }: { logs: WeightLog[]; targetWeight: 
   const hi = Math.max(...weights, targetWeight) + 1;
   const range = hi - lo || 1;
 
-  const W = 300;
-  const H = 140;
-  const px = 8;
-  const py = 12;
+  const W = 600;
+  const H = 280;
+  const px = 16;
+  const py = 24;
 
   const pts = data.map((log, i) => ({
     x: px + (i / (data.length - 1)) * (W - 2 * px),
@@ -150,7 +193,7 @@ function WeightChart({ logs, targetWeight }: { logs: WeightLog[]; targetWeight: 
       <svg viewBox={`0 0 ${W} ${H}`} className="flex-1" preserveAspectRatio="none">
         <defs>
           <linearGradient id="wg" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="var(--accent-violet)" stopOpacity="0.2" />
+            <stop offset="0%" stopColor="var(--accent-violet)" stopOpacity="0.15" />
             <stop offset="100%" stopColor="var(--accent-violet)" stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -162,18 +205,30 @@ function WeightChart({ logs, targetWeight }: { logs: WeightLog[]; targetWeight: 
           y2={targetY}
           stroke="var(--success)"
           strokeWidth="1"
-          strokeDasharray="4 3"
-          opacity="0.6"
+          strokeDasharray="8 6"
+          opacity="0.5"
+          vectorEffect="non-scaling-stroke"
         />
-        <polyline points={polyline} fill="none" stroke="var(--accent-violet)" strokeWidth="2" />
+        <polyline
+          points={polyline}
+          fill="none"
+          stroke="var(--accent-violet)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
         {pts.map((p, i) => (
           <circle
             key={i}
             cx={p.x}
             cy={p.y}
-            r="2.5"
+            r="4"
             fill="var(--accent-violet)"
-            opacity={i === pts.length - 1 ? 1 : 0.5}
+            opacity={i === pts.length - 1 ? 1 : 0.4}
+            stroke="var(--card)"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"
           />
         ))}
       </svg>
@@ -230,7 +285,7 @@ export function TrendsClient({
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <TrendingUp className="text-accent-violet h-4 w-4" />
+                <span className="text-base leading-none">📊</span>
                 <CardTitle className="text-base">Nutrition — Last 30 Days</CardTitle>
               </div>
             </div>
@@ -244,10 +299,10 @@ export function TrendsClient({
                     key={tab.key}
                     onClick={() => setNutritionTab(tab.key)}
                     className={cn(
-                      "relative z-10 flex flex-1 items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors sm:text-sm",
+                      "relative z-10 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors sm:flex-1 sm:text-sm",
                       isActive
-                        ? "text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground",
+                        ? "text-primary-foreground flex-1"
+                        : "text-muted-foreground hover:text-foreground px-3 sm:px-0",
                     )}
                   >
                     {isActive && (
@@ -282,7 +337,7 @@ export function TrendsClient({
           <CardHeader className="pb-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Scale className="text-accent-violet h-4 w-4" />
+                <span className="text-base leading-none">⚖️</span>
                 <CardTitle className="text-base">Weight History</CardTitle>
               </div>
               <div className="text-muted-foreground text-xs">

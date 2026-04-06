@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { COLOR_PRESETS, COLOR_STORAGE_KEY, DEFAULT_COLOR_ID } from "@/config/colors";
 
@@ -16,16 +16,31 @@ const ColorContext = createContext<ColorContextValue>({
   setColor: () => {},
 });
 
+const listeners = new Set<() => void>();
+
+function subscribe(cb: () => void) {
+  listeners.add(cb);
+  return () => {
+    listeners.delete(cb);
+  };
+}
+
+function getSnapshot(): string {
+  const stored = localStorage.getItem(COLOR_STORAGE_KEY);
+  return stored && COLOR_PRESETS.some((p) => p.id === stored) ? stored : DEFAULT_COLOR_ID;
+}
+
+function getServerSnapshot(): string {
+  return DEFAULT_COLOR_ID;
+}
+
+function emit() {
+  listeners.forEach((l) => l());
+}
+
 export function ColorProvider({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme();
-  const [activeColorId, setActiveColorId] = useState(DEFAULT_COLOR_ID);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(COLOR_STORAGE_KEY);
-    if (stored && COLOR_PRESETS.some((p) => p.id === stored)) {
-      setActiveColorId(stored);
-    }
-  }, []);
+  const activeColorId = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
     const preset = COLOR_PRESETS.find((p) => p.id === activeColorId);
@@ -48,8 +63,8 @@ export function ColorProvider({ children }: { children: React.ReactNode }) {
   }, [activeColorId, resolvedTheme]);
 
   const setColor = useCallback((id: string) => {
-    setActiveColorId(id);
     localStorage.setItem(COLOR_STORAGE_KEY, id);
+    emit();
   }, []);
 
   return (

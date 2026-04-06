@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Flame, Target, Users, Zap, Loader2, TrendingUp, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -108,16 +108,17 @@ const BENEFITS = [
 export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [signingIn, setSigningIn] = useState(false);
-  const [foodPositions, setFoodPositions] = useState<{ x: number; y: number }[]>([]);
-
-  useEffect(() => {
-    setFoodPositions(
-      FLOATING_FOODS.map(() => ({
-        x: Math.round(Math.random() * 85 + 5),
-        y: Math.round(Math.random() * 85 + 5),
-      })),
-    );
-  }, []);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const [foodPositions] = useState(() =>
+    FLOATING_FOODS.map(() => ({
+      x: Math.round(Math.random() * 85 + 5),
+      y: Math.round(Math.random() * 85 + 5),
+    })),
+  );
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -135,7 +136,7 @@ export default function LandingPage() {
   return (
     <>
       {/* Floating food items — positions randomized on mount */}
-      {foodPositions.length > 0 && (
+      {isClient && (
         <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
           {FLOATING_FOODS.map((food, i) => {
             const pos = foodPositions[i];
@@ -598,7 +599,8 @@ export default function LandingPage() {
                 Ready to play?
               </h2>
               <p className="text-muted-foreground relative mx-auto mt-4 max-w-md">
-                Your next meal could be your first XP. Start tracking today — it's free, forever.
+                Your next meal could be your first XP. Start tracking today — it&apos;s free,
+                forever.
               </p>
               <div className="relative mt-8">
                 <Button

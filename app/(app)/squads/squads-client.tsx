@@ -4,17 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  Users,
-  Plus,
-  LogIn,
-  Copy,
-  Check,
-  ChevronRight,
-  Crown,
-  Loader2,
-  ArrowUpDown,
-} from "lucide-react";
+import { Users, Plus, LogIn, Copy, Check, ChevronRight, Loader2, ArrowUpDown } from "lucide-react";
 import { PageModuleHeader } from "@/components/layout/page-module-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,7 +25,6 @@ interface SquadItem {
 
 interface SquadsClientProps {
   squads: SquadItem[];
-  userId: string;
 }
 
 type SortKey = "recent" | "mine-first";
@@ -61,7 +50,7 @@ function CopyCode({ code }: { code: string }) {
   );
 }
 
-export function SquadsClient({ squads, userId }: SquadsClientProps) {
+export function SquadsClient({ squads }: SquadsClientProps) {
   const router = useRouter();
   const [view, setView] = useState<"list" | "create" | "join">("list");
   const [loading, setLoading] = useState(false);
@@ -81,9 +70,9 @@ export function SquadsClient({ squads, userId }: SquadsClientProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name.trim(), description: description.trim() || undefined }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      router.push(`/squads/${data.code}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error);
+      router.push(`/squads/${json.data.code}`);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to create");
@@ -102,13 +91,13 @@ export function SquadsClient({ squads, userId }: SquadsClientProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: joinCode.toUpperCase() }),
       });
-      const data = await res.json();
-      if (data.alreadyMember) {
-        router.push(`/squads/${data.code}`);
+      const json = await res.json();
+      if (json.alreadyMember) {
+        router.push(`/squads/${json.code}`);
         return;
       }
-      if (!res.ok) throw new Error(data.error);
-      router.push(`/squads/${data.code}`);
+      if (!res.ok) throw new Error(json.error);
+      router.push(`/squads/${json.data.code}`);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to join");
@@ -280,7 +269,7 @@ export function SquadsClient({ squads, userId }: SquadsClientProps) {
         <motion.div {...anim(0.05)}>
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-              <div className="bg-muted flex h-12 w-12 items-center justify-center rounded-full">
+              <div className="bg-muted flex h-12 w-12 items-center justify-center">
                 <Users className="text-muted-foreground h-6 w-6" />
               </div>
               <div>
@@ -293,26 +282,24 @@ export function SquadsClient({ squads, userId }: SquadsClientProps) {
           </Card>
         </motion.div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-3 md:grid-cols-2">
           {sorted.map((squad, i) => {
             const isOwned = squad.role === "owner";
             return (
               <motion.div key={squad.id} {...anim(0.03 * (i + 1))}>
                 <Link href={`/squads/${squad.code}`}>
                   <Card
-                    className={`hover:bg-muted/30 transition-colors ${
+                    className={`hover:bg-muted/30 h-full transition-colors ${
                       isOwned ? "border-accent-violet/40" : ""
                     }`}
                   >
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <div className="bg-accent-violet/10 flex h-10 w-10 shrink-0 items-center justify-center">
-                        <Users className="text-accent-violet h-5 w-5" />
-                      </div>
+                    <CardContent className="flex items-center gap-3 p-4">
+                      <span className="shrink-0 text-2xl leading-none">👥</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <p className="truncate text-sm font-semibold">{squad.name}</p>
                           <span
-                            className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] leading-none font-semibold ${
+                            className={`shrink-0 px-2 py-0.5 text-[10px] leading-none font-semibold ${
                               isOwned
                                 ? "bg-accent-violet/15 text-accent-violet"
                                 : "bg-muted text-muted-foreground"
@@ -321,7 +308,12 @@ export function SquadsClient({ squads, userId }: SquadsClientProps) {
                             {isOwned ? "Owner" : "Member"}
                           </span>
                         </div>
-                        <div className="text-muted-foreground mt-0.5 flex items-center gap-3 text-xs">
+                        {squad.description && (
+                          <p className="text-muted-foreground mt-0.5 truncate text-xs">
+                            {squad.description}
+                          </p>
+                        )}
+                        <div className="text-muted-foreground mt-1 flex items-center gap-3 text-xs">
                           <span>
                             {squad.memberCount}/{squad.maxMembers} members
                           </span>

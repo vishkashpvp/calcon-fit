@@ -40,7 +40,6 @@ interface ProfileClientProps {
   user: { name: string; email: string; image: string | null };
   profile: UserProfile;
   totalMealsLogged: number;
-  memberSinceDays: number;
   recentWeightLogs: WeightLog[];
 }
 
@@ -133,7 +132,6 @@ export function ProfileClient({
   user,
   profile,
   totalMealsLogged,
-  memberSinceDays,
   recentWeightLogs,
 }: ProfileClientProps) {
   const router = useRouter();
@@ -167,29 +165,83 @@ export function ProfileClient({
           title={user.name}
           description="Your progress, stats, and achievements"
           actions={
-            <Avatar className="h-16 w-16 shrink-0 sm:h-20 sm:w-20">
-              <AvatarImage src={user.image ?? ""} alt={user.name} />
-              <AvatarFallback className="text-lg sm:text-xl">
-                {getInitials(user.name)}
-              </AvatarFallback>
-            </Avatar>
+            <Link href="/settings" className="shrink-0">
+              <Button variant="outline" size="sm" className="gap-1.5 text-sm">
+                Edit <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
           }
         />
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge variant="neon" className="px-3 py-1">
-            {levelInfo.name}
-          </Badge>
-          <Badge variant="secondary" className="px-3 py-1 capitalize">
-            {profile.gender}
-          </Badge>
-          <Badge variant="secondary" className="px-3 py-1">
-            {memberSinceDays} day{memberSinceDays !== 1 ? "s" : ""} member
-          </Badge>
-          <Link href="/settings" className="ml-auto shrink-0">
-            <Button variant="outline" size="sm" className="gap-1.5 text-sm">
-              Edit <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
+      </motion.div>
+
+      {/* Google Account Card */}
+      <motion.div {...anim(0.03)}>
+        <div className="relative overflow-hidden p-px">
+          <div
+            className="absolute top-1/2 left-1/2 h-[400%] w-[400%] -translate-x-1/2 -translate-y-1/2 animate-[spin_6s_linear_infinite] opacity-40"
+            style={{
+              background: "conic-gradient(from 0deg, #4285F4, #34A853, #FBBC05, #EA4335, #4285F4)",
+            }}
+          />
+          <div className="bg-card relative overflow-hidden">
+            <div
+              className="animate-google-sweep pointer-events-none absolute inset-0 opacity-[0.05]"
+              style={{
+                background: "linear-gradient(90deg, #4285F4, #34A853, #FBBC05, #EA4335, #4285F4)",
+                backgroundSize: "200% 100%",
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(0deg, transparent, transparent 3px, currentColor 3px, currentColor 4px)",
+              }}
+            />
+            <div className="relative flex items-center gap-4 p-4 sm:p-5">
+              <Avatar className="ring-border/50 h-12 w-12 shrink-0 ring-2 sm:h-14 sm:w-14">
+                <AvatarImage src={user.image ?? ""} alt={user.name} />
+                <AvatarFallback className="text-sm sm:text-base">
+                  {getInitials(user.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                      fill="#4285F4"
+                    />
+                    <path
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      fill="#34A853"
+                    />
+                    <path
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      fill="#FBBC05"
+                    />
+                    <path
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      fill="#EA4335"
+                    />
+                  </svg>
+                  <span className="text-muted-foreground text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Linked
+                  </span>
+                </div>
+                <p className="mt-1 truncate text-sm">{user.email}</p>
+              </div>
+              <button
+                className="border-border/50 text-muted-foreground hover:border-destructive/50 hover:text-destructive flex shrink-0 items-center gap-1.5 border px-3 py-1.5 text-xs font-medium transition-colors"
+                onClick={async () => {
+                  await signOut({ fetchOptions: { onSuccess: () => router.push("/") } });
+                }}
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Sign out
+              </button>
+            </div>
+          </div>
         </div>
       </motion.div>
 
@@ -197,16 +249,16 @@ export function ProfileClient({
       <motion.div {...anim(0.05)}>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            { label: "Meals Logged", value: totalMealsLogged.toString(), icon: Utensils },
-            { label: "Total XP", value: profile.xp.toString(), icon: Zap },
-            { label: "Current Streak", value: `${profile.streak}d`, icon: Flame },
-            { label: "Achievements", value: `${earnedCount}/${achievements.length}`, icon: Trophy },
-          ].map((item, i) => (
+            { label: "Meals Logged", value: totalMealsLogged.toString(), emoji: "🍽️" },
+            { label: "Total XP", value: profile.xp.toString(), emoji: "⚡" },
+            { label: "Current Streak", value: `${profile.streak}d`, emoji: "🔥" },
+            { label: "Achievements", value: `${earnedCount}/${achievements.length}`, emoji: "🏆" },
+          ].map((item) => (
             <Card key={item.label}>
               <CardContent className="flex items-center gap-2 p-3 sm:gap-3 sm:p-5">
-                <div className="bg-accent-violet/10 flex h-8 w-8 shrink-0 items-center justify-center sm:h-10 sm:w-10">
-                  <item.icon className="text-accent-violet h-4 w-4 sm:h-5 sm:w-5" />
-                </div>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center text-xl sm:h-10 sm:w-10 sm:text-2xl">
+                  {item.emoji}
+                </span>
                 <div className="min-w-0">
                   <p className="text-base leading-tight font-bold tabular-nums sm:text-lg">
                     {item.value}
@@ -218,7 +270,7 @@ export function ProfileClient({
           ))}
         </div>
         <div className="border-accent-violet/40 bg-accent-violet/10 mt-3 border-l-2 px-3 py-2">
-          <p className="text-muted-foreground text-[11px]">
+          <p className="text-foreground/80 text-[11px]">
             <span className="text-accent-violet font-semibold">XP</span> (Experience Points) — earn
             by logging meals (+10), hitting daily goals (+25), maintaining streaks (+5/day), and
             completing quests (+50)
@@ -463,26 +515,6 @@ export function ProfileClient({
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-
-      {/* Sign out */}
-      <motion.div {...anim(0.35)}>
-        <div className="border-border/40 flex flex-wrap items-center justify-between gap-3 border-t pt-6">
-          <p className="text-muted-foreground text-sm">
-            Signed in as <span className="text-foreground font-medium">{user.email}</span>
-          </p>
-          <Button
-            size="sm"
-            variant="outline"
-            className="text-destructive hover:bg-destructive hover:text-destructive-foreground gap-2 transition-colors"
-            onClick={async () => {
-              await signOut({ fetchOptions: { onSuccess: () => router.push("/") } });
-            }}
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            Sign out
-          </Button>
-        </div>
       </motion.div>
     </div>
   );

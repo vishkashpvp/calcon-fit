@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
+import { MESSAGES } from "@/config/messages";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ code: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
 
   const { code } = await params;
 
@@ -61,13 +62,15 @@ export async function GET(_req: Request, { params }: { params: Promise<{ code: s
   );
 
   return NextResponse.json({
-    id: squad.id,
-    name: squad.name,
-    code: squad.code,
-    description: squad.description,
-    createdBy: squad.createdBy,
-    maxMembers: squad.maxMembers,
-    createdAt: squad.createdAt.toISOString(),
-    members: memberData,
+    data: {
+      id: squad.id,
+      name: squad.name,
+      code: squad.code,
+      description: squad.description,
+      createdBy: squad.createdBy,
+      maxMembers: squad.maxMembers,
+      createdAt: squad.createdAt.toISOString(),
+      members: memberData,
+    },
   });
 }

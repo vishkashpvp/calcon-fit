@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
+import { MESSAGES } from "@/config/messages";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -20,7 +21,7 @@ const createSchema = z.object({
 
 export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
 
   const memberships = await prisma.squadMember.findMany({
     where: { userId: session.user.id },
@@ -44,12 +45,12 @@ export async function GET() {
     role: m.role,
   }));
 
-  return NextResponse.json(squads);
+  return NextResponse.json({ data: squads });
 }
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);
@@ -81,5 +82,5 @@ export async function POST(req: Request) {
     },
   });
 
-  return NextResponse.json({ code: squad.code }, { status: 201 });
+  return NextResponse.json({ data: { code: squad.code } }, { status: 201 });
 }

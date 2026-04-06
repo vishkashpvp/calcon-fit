@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Search, X, Loader2, UtensilsCrossed, Minus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { MEAL_TYPES, type MealType } from "@/config/constants";
-import type { MealLog, NutritionInfo } from "@/types";
+import { AnimatePresence, motion } from "framer-motion";
+import { Loader2, Minus, Plus, Search, UtensilsCrossed, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { PageModuleHeader } from "@/components/layout/page-module-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MEAL_TYPES, type MealType } from "@/config/constants";
 import { useDebounce } from "@/hooks/use-debounce";
-import { PageModuleHeader } from "@/components/layout/page-module-header";
 import { cn } from "@/lib/utils";
+import type { MealLog, NutritionInfo } from "@/types";
 
 type SelectedFood = {
   foodId: string;
@@ -24,7 +25,6 @@ type SelectedFood = {
 };
 
 interface MealsClientProps {
-  userId: string;
   dailyCalGoal: number;
   meals: MealLog[];
   date: string;
@@ -167,74 +167,57 @@ export function MealsClient({ dailyCalGoal, meals: initialMeals, date }: MealsCl
 
       {/* ── Summary: calories left + macros right ── */}
       <motion.div {...f(0.05)}>
-        <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-          <div className="border-border bg-card flex items-center gap-5 border p-5">
-            <div className="relative h-16 w-16 shrink-0">
-              <svg viewBox="0 0 36 36" className="h-16 w-16 -rotate-90">
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15.5"
-                  fill="none"
-                  strokeWidth="3"
-                  className="stroke-border"
-                />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="15.5"
-                  fill="none"
-                  strokeWidth="3"
-                  strokeLinecap="butt"
-                  strokeDasharray={2 * Math.PI * 15.5}
-                  strokeDashoffset={2 * Math.PI * 15.5 * (1 - calPct / 100)}
-                  className={isOver ? "stroke-destructive" : "stroke-accent-violet"}
-                  style={{ transition: "stroke-dashoffset 0.7s ease" }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-sm font-black tabular-nums">{calPct}%</span>
-              </div>
-            </div>
-            <div>
-              <p className="text-2xl font-black tabular-nums">
-                {totals.calories.toLocaleString()}
-                <span className="text-muted-foreground ml-1 text-sm font-normal">
-                  / {dailyCalGoal.toLocaleString()}
-                </span>
-              </p>
-              <p className={cn("text-sm", isOver ? "text-destructive" : "text-muted-foreground")}>
-                {isOver
-                  ? `${(totals.calories - dailyCalGoal).toLocaleString()} over`
-                  : remaining > 0
-                    ? `${remaining.toLocaleString()} remaining`
-                    : "Goal reached"}
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
-            {[
-              { label: "Protein", value: totals.protein, emoji: "🍗" },
-              { label: "Carbs", value: totals.carbs, emoji: "🍚" },
-              { label: "Fat", value: totals.fat, emoji: "🥑" },
-            ].map((m) => (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
+          <div className="border-border bg-card relative overflow-hidden border p-4">
+            <span
+              className="pointer-events-none absolute top-1/2 -right-1 -translate-y-1/2 text-5xl opacity-15 select-none"
+              aria-hidden="true"
+            >
+              🔥
+            </span>
+            <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
+              Calories
+            </p>
+            <p className="mt-3 text-2xl font-black tabular-nums">
+              {totals.calories.toLocaleString()}
+              <span className="text-muted-foreground ml-0.5 text-xs font-medium">
+                / {dailyCalGoal.toLocaleString()}
+              </span>
+            </p>
+            <div className="bg-border/50 mt-2 h-1 overflow-hidden">
               <div
-                key={m.label}
-                className="border-border bg-card flex flex-col justify-between border p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
-                    {m.label}
-                  </p>
-                  <span className="text-sm leading-none">{m.emoji}</span>
-                </div>
-                <p className="mt-3 text-2xl font-black tabular-nums">
-                  {m.value}
-                  <span className="text-muted-foreground ml-0.5 text-xs font-medium">g</span>
-                </p>
-              </div>
-            ))}
+                className={cn(
+                  "h-full transition-all",
+                  isOver ? "bg-destructive" : "bg-accent-violet",
+                )}
+                style={{ width: `${calPct}%` }}
+              />
+            </div>
           </div>
+          {[
+            { label: "Protein", value: totals.protein, emoji: "🍗" },
+            { label: "Carbs", value: totals.carbs, emoji: "🍚" },
+            { label: "Fat", value: totals.fat, emoji: "🥑" },
+          ].map((m) => (
+            <div
+              key={m.label}
+              className="border-border bg-card relative overflow-hidden border p-4"
+            >
+              <span
+                className="pointer-events-none absolute top-1/2 -right-1 -translate-y-1/2 text-5xl opacity-15 select-none"
+                aria-hidden="true"
+              >
+                {m.emoji}
+              </span>
+              <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
+                {m.label}
+              </p>
+              <p className="mt-3 text-2xl font-black tabular-nums">
+                {m.value}
+                <span className="text-muted-foreground ml-0.5 text-xs font-medium">g</span>
+              </p>
+            </div>
+          ))}
         </div>
       </motion.div>
 
@@ -316,13 +299,11 @@ export function MealsClient({ dailyCalGoal, meals: initialMeals, date }: MealsCl
                             <p className="font-medium">{food.name}</p>
                             <p className="text-muted-foreground text-xs">
                               {food.quantity} serving{food.quantity > 1 ? "s" : ""} · P
-                              {Math.round(food.protein * food.quantity)} C
-                              {Math.round(food.carbs * food.quantity)} F
-                              {Math.round(food.fat * food.quantity)}
+                              {food.protein} C{food.carbs} F{food.fat}
                             </p>
                           </div>
                           <span className="text-muted-foreground ml-3 shrink-0 font-semibold tabular-nums">
-                            {Math.round(food.calories * food.quantity)} cal
+                            {food.calories} cal
                           </span>
                         </div>
                       )),

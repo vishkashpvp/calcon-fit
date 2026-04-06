@@ -41,14 +41,14 @@ export function InviteClient({ squad }: InviteClientProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: squad.code }),
       });
-      const data = await res.json();
-      if (data.alreadyMember) {
+      const json = await res.json();
+      if (json.alreadyMember) {
         setInfo("You're already a member! Redirecting...");
-        setTimeout(() => router.push(`/squads/${data.code}`), 1000);
+        setTimeout(() => router.push(`/squads/${json.code}`), 1000);
         return;
       }
-      if (!res.ok) throw new Error(data.error);
-      router.push(`/squads/${data.code}`);
+      if (!res.ok) throw new Error(json.error);
+      router.push(`/squads/${json.data.code}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to join");
     } finally {

@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
+import { MESSAGES } from "@/config/messages";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ code: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
 
   const { code } = await params;
   const squad = await prisma.squad.findUnique({ where: { code: code.toUpperCase() } });
@@ -15,7 +16,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ code: 
     where: { squadId_userId: { squadId: squad.id, userId: session.user.id } },
   });
   if (!membership) {
-    return NextResponse.json({ error: "Not a member" }, { status: 400 });
+    return NextResponse.json({ error: "Not a member" }, { status: 403 });
   }
 
   if (membership.role === "owner") {

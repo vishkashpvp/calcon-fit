@@ -24,7 +24,6 @@ export default async function MealsPage() {
 
   return (
     <MealsClient
-      userId={session.user.id}
       dailyCalGoal={profile.dailyCalGoal}
       meals={JSON.parse(JSON.stringify(todayMeals))}
       date={today}

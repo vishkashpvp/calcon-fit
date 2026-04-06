@@ -25,7 +25,11 @@ export function getSidebarExpandedServerSnapshot(): boolean {
 export function setSidebarExpanded(next: boolean) {
   localStorage.setItem(KEY, String(next));
   if (typeof document !== "undefined") {
-    document.documentElement.style.setProperty("--sb-rail", next ? "212px" : "72px");
+    if (next) {
+      document.documentElement.style.removeProperty("--sb-rail");
+    } else {
+      document.documentElement.style.setProperty("--sb-rail", "72px");
+    }
   }
   emit();
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
+import { MESSAGES } from "@/config/messages";
 import { z } from "zod";
 
 const joinSchema = z.object({
@@ -10,7 +11,7 @@ const joinSchema = z.object({
 
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
 
   const body = await req.json();
   const parsed = joinSchema.safeParse(body);
@@ -52,5 +53,5 @@ export async function POST(req: Request) {
     data: { squadId: squad.id, userId: session.user.id },
   });
 
-  return NextResponse.json({ code: squad.code }, { status: 200 });
+  return NextResponse.json({ data: { code: squad.code } });
 }

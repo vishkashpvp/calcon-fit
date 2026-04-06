@@ -6,14 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
   UtensilsCrossed,
-  Flame,
   Zap,
   ChevronRight,
-  Star,
   Check,
   Users,
   Crown,
-  TrendingUp,
   Search,
   X,
   Loader2,
@@ -81,13 +78,13 @@ function StatCard({
   label,
   value,
   unit,
-  icon: Icon,
+  emoji,
   delay,
 }: {
   label: string;
   value: number | string;
   unit?: string;
-  icon: typeof Flame;
+  emoji: string;
   delay: number;
 }) {
   return (
@@ -95,14 +92,17 @@ function StatCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay, duration: 0.35 }}
-      className="border-border bg-card flex flex-col justify-between border p-4"
+      className="border-border bg-card relative overflow-hidden border p-4"
     >
-      <div className="flex items-center justify-between">
-        <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
-          {label}
-        </p>
-        <Icon className="text-accent-violet h-4 w-4" />
-      </div>
+      <span
+        className="pointer-events-none absolute top-1/2 -right-1 -translate-y-1/2 text-5xl opacity-15 select-none"
+        aria-hidden="true"
+      >
+        {emoji}
+      </span>
+      <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
+        {label}
+      </p>
       <p className="mt-4 text-3xl font-black tracking-tight tabular-nums sm:text-4xl">
         {value}
         {unit && <span className="text-muted-foreground ml-1 text-sm font-medium">{unit}</span>}
@@ -264,12 +264,6 @@ export function DashboardClient({
         <PageModuleHeader
           category={getGreeting()}
           title={firstName}
-          meta={
-            <>
-              <span className="text-accent-violet font-semibold">●</span> {levelInfo.name} ·{" "}
-              {profile.streak} day streak
-            </>
-          }
           description="Track your daily nutrition, earn XP, and level up"
           actions={
             <Button
@@ -384,14 +378,17 @@ export function DashboardClient({
               return (
                 <div
                   key={item.label}
-                  className="border-border bg-card flex flex-col justify-between border p-4"
+                  className="border-border bg-card relative overflow-hidden border p-4"
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
-                      {item.label}
-                    </p>
-                    <span className="text-base leading-none">{item.emoji}</span>
-                  </div>
+                  <span
+                    className="pointer-events-none absolute top-1/2 -right-1 -translate-y-1/2 text-5xl opacity-15 select-none"
+                    aria-hidden="true"
+                  >
+                    {item.emoji}
+                  </span>
+                  <p className="text-muted-foreground text-[10px] font-semibold tracking-[0.15em] uppercase">
+                    {item.label}
+                  </p>
                   <div className="mt-4">
                     <p className="text-2xl font-black tracking-tight tabular-nums sm:text-3xl">
                       {item.value}
@@ -430,18 +427,12 @@ export function DashboardClient({
         <p className="text-muted-foreground mb-3 text-xs font-medium tracking-[0.2em] uppercase">
           Activity Metrics
         </p>
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
-          <StatCard
-            label="Meals Logged"
-            value={summary.mealsLogged}
-            icon={UtensilsCrossed}
-            delay={0.12}
-          />
-          <StatCard label="Streak" value={profile.streak} unit="days" icon={Flame} delay={0.14} />
-          <StatCard label="XP" value={profile.xp} icon={Zap} delay={0.16} />
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
+          <StatCard label="Meals Logged" value={summary.mealsLogged} emoji="🍽️" delay={0.12} />
+          <StatCard label="XP" value={profile.xp} emoji="⚡" delay={0.14} />
         </div>
         <div className="border-accent-violet/40 bg-accent-violet/10 mt-3 border-l-2 px-3 py-2">
-          <p className="text-muted-foreground text-[11px]">
+          <p className="text-foreground/80 text-[11px]">
             <span className="text-accent-violet font-semibold">XP</span> — earn by logging meals
             (+10), hitting daily goals (+25), maintaining streaks (+5/day), and completing quests
             (+50)

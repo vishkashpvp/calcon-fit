@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
@@ -20,19 +20,19 @@ const variants = {
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const currentIndex = getRouteIndex(pathname);
-  const prevIndex = useRef(currentIndex);
-  const directionRef = useRef(0);
+  const [prev, setPrev] = useState(pathname);
+  const [direction, setDirection] = useState(0);
 
-  if (currentIndex !== prevIndex.current) {
-    directionRef.current = currentIndex > prevIndex.current ? 1 : -1;
-    prevIndex.current = currentIndex;
+  if (pathname !== prev) {
+    setDirection(currentIndex > getRouteIndex(prev) ? 1 : -1);
+    setPrev(pathname);
   }
 
   return (
-    <AnimatePresence mode="wait" custom={directionRef.current} initial={false}>
+    <AnimatePresence mode="wait" custom={direction} initial={false}>
       <motion.div
         key={pathname}
-        custom={directionRef.current}
+        custom={direction}
         variants={variants}
         initial="enter"
         animate="center"

@@ -4,11 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.985 0 0);
+  --background: oklch(1 0 0);
   --foreground: oklch(0.09 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(0.985 0 0);
   --card-foreground: oklch(0.09 0 0);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.985 0 0);
   --popover-foreground: oklch(0.09 0 0);
   --primary: oklch(0.15 0 0);
   --primary-foreground: oklch(0.985 0 0);
@@ -23,8 +23,8 @@
   --border: oklch(0 0 0 / 0.25);
   --input: oklch(0 0 0 / 0.25);
   --ring: oklch(0.15 0 0);
-  --sb-rail: 212px;
-  --sb-left: 0;
+  --sb-rail: 240px;
+  --sb-left: max(0px, calc(50vw - 700px));
   --sb-right: auto;
   --sb-order: -1;
 
@@ -41,11 +41,11 @@
 }
 
 .dark {
-  --background: #0d0d0d;
+  --background: #000000;
   --foreground: oklch(0.93 0 0);
-  --card: #000000;
+  --card: #0d0d0d;
   --card-foreground: oklch(0.93 0 0);
-  --popover: #000000;
+  --popover: #0d0d0d;
   --popover-foreground: oklch(0.93 0 0);
   --primary: oklch(0.92 0 0);
   --primary-foreground: oklch(0.06 0 0);
@@ -71,6 +71,12 @@
   --fat: oklch(0.72 0.16 350);
 
   --bar-fill: var(--accent-violet);
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --sb-rail: 260px;
+  }
 }
 
 @theme inline {
@@ -201,6 +207,18 @@
 .animate-grid-fade {
   animation: grid-fade 8s ease-in-out infinite;
 }
+
+@keyframes google-sweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+.animate-google-sweep {
+  animation: google-sweep 6s linear infinite;
+}
 .dot-grid {
   background-image: radial-gradient(circle, oklch(0 0 0 / 0.06) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -254,6 +272,13 @@
 .slider-input::-webkit-slider-thumb:active {
   transform: scale(1.15);
 }
+@media (max-width: 767.98px) {
+  html.nav-top .app-main {
+    padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
 .slider-input::-moz-range-thumb {
   width: 24px;
   height: 24px;

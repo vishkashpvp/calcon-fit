@@ -39,7 +39,7 @@ export function XpBar({ xp, showHint }: XpBarProps) {
       </div>
       {showHint && (
         <div className="border-accent-violet/40 bg-accent-violet/10 border-l-2 px-3 py-1.5">
-          <p className="text-muted-foreground text-xs">
+          <p className="text-foreground/80 text-xs">
             Earn XP by logging meals, hitting calorie goals, and keeping streaks alive.
           </p>
         </div>

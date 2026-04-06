@@ -6,8 +6,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   Users,
-  Copy,
-  Check,
   Crown,
   Flame,
   Zap,
@@ -18,7 +16,6 @@ import {
   Trash2,
   Share2,
   UserMinus,
-  Drumstick,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -80,7 +77,12 @@ export function SquadDetailClient({ squad, members, currentUserId }: SquadDetail
 
     setLeaving(true);
     try {
-      await fetch(`/api/squads/${squad.code}/leave`, { method: "POST" });
+      const res = await fetch(`/api/squads/${squad.code}/leave`, { method: "POST" });
+      if (!res.ok) {
+        const json = await res.json();
+        alert(json.error ?? "Failed to leave squad");
+        return;
+      }
       router.push("/squads");
       router.refresh();
     } finally {
@@ -92,11 +94,16 @@ export function SquadDetailClient({ squad, members, currentUserId }: SquadDetail
     if (!confirm(`Remove ${name} from the squad?`)) return;
     setKickingId(userId);
     try {
-      await fetch(`/api/squads/${squad.code}/kick`, {
+      const res = await fetch(`/api/squads/${squad.code}/kick`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
       });
+      if (!res.ok) {
+        const json = await res.json();
+        alert(json.error ?? "Failed to remove member");
+        return;
+      }
       router.refresh();
     } finally {
       setKickingId(null);
@@ -109,10 +116,10 @@ export function SquadDetailClient({ squad, members, currentUserId }: SquadDetail
     transition: { delay, duration: 0.3 },
   });
 
-  const tabs: { key: LeaderboardTab; label: string; icon: typeof Trophy }[] = [
-    { key: "calories", label: "Calories", icon: Trophy },
-    { key: "protein", label: "Protein", icon: Drumstick },
-    { key: "streak", label: "Streak", icon: Flame },
+  const tabs: { key: LeaderboardTab; label: string; emoji: string }[] = [
+    { key: "calories", label: "Calories", emoji: "🏆" },
+    { key: "protein", label: "Protein", emoji: "🍗" },
+    { key: "streak", label: "Streak", emoji: "🔥" },
   ];
 
   function getStatValue(member: SquadMember) {
@@ -202,7 +209,7 @@ export function SquadDetailClient({ squad, members, currentUserId }: SquadDetail
                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                           />
                         )}
-                        <tab.icon className="relative h-3 w-3" />
+                        <span className="relative text-sm leading-none">{tab.emoji}</span>
                         <span className={`relative ${!isActive ? "max-sm:hidden" : ""}`}>
                           {tab.label}
                         </span>

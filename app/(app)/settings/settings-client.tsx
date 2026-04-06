@@ -35,7 +35,6 @@ import {
 import type { UserProfile } from "@/types";
 
 interface SettingsClientProps {
-  user: { name: string; email: string; image: string | null };
   profile: UserProfile | null;
 }
 
@@ -45,7 +44,7 @@ function SectionHeader({
   desc,
 }: {
   icon: typeof Palette;
-  title: string;
+  title: React.ReactNode;
   desc?: string;
 }) {
   return (
@@ -61,7 +60,7 @@ function SectionHeader({
   );
 }
 
-export function SettingsClient({ user, profile }: SettingsClientProps) {
+export function SettingsClient({ profile }: SettingsClientProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { activeColorId, setColor } = useAccentColor();
@@ -315,17 +314,27 @@ export function SettingsClient({ user, profile }: SettingsClientProps) {
                 </div>
               </div>
 
-              {/* Sidebar Position */}
+              {/* Layout Position */}
               <div className="space-y-3">
-                <SectionHeader icon={PanelLeft} title="Sidebar Position" />
+                <SectionHeader
+                  icon={PanelLeft}
+                  title={
+                    <>
+                      <span className="md:hidden">Navbar</span>
+                      <span className="hidden md:inline">Sidebar</span>
+                    </>
+                  }
+                />
                 <div className="border-border/50 relative flex gap-1 border p-1">
                   {(["left", "right"] as const).map((pos) => {
                     const isActive = mounted && sidebarPosition === pos;
+                    const mobileLabel = pos === "left" ? "Bottom" : "Top";
+                    const desktopLabel = pos === "left" ? "Left" : "Right";
                     return (
                       <button
                         key={pos}
                         onClick={() => setSidebarPosition(pos)}
-                        className={`relative z-10 flex flex-1 items-center justify-center gap-2 py-2.5 text-sm font-medium capitalize transition-colors ${
+                        className={`relative z-10 flex flex-1 items-center justify-center gap-2 py-2.5 text-sm font-medium transition-colors ${
                           isActive
                             ? "text-primary-foreground"
                             : "text-muted-foreground hover:text-foreground"
@@ -338,7 +347,10 @@ export function SettingsClient({ user, profile }: SettingsClientProps) {
                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                           />
                         )}
-                        <span className="relative">{pos}</span>
+                        <span className="relative">
+                          <span className="md:hidden">{mobileLabel}</span>
+                          <span className="hidden md:inline">{desktopLabel}</span>
+                        </span>
                       </button>
                     );
                   })}

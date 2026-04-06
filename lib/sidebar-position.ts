@@ -1,5 +1,7 @@
 const KEY = "sidebar-position";
 
+export type SidebarPosition = "left" | "right";
+
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -13,27 +15,33 @@ export function subscribeSidebarPosition(callback: () => void) {
   };
 }
 
-export function getSidebarPositionSnapshot(): "left" | "right" {
+export function getSidebarPositionSnapshot(): SidebarPosition {
   if (typeof window === "undefined") return "left";
-  return localStorage.getItem(KEY) === "right" ? "right" : "left";
+  const stored = localStorage.getItem(KEY);
+  return stored === "right" || stored === "top" ? "right" : "left";
 }
 
-export function getSidebarPositionServerSnapshot(): "left" | "right" {
+export function getSidebarPositionServerSnapshot(): SidebarPosition {
   return "left";
 }
 
-export function setSidebarPosition(pos: "left" | "right") {
+const SB_INSET = "max(0px, calc(50vw - 700px))";
+
+export function setSidebarPosition(pos: SidebarPosition) {
   localStorage.setItem(KEY, pos);
   if (typeof document !== "undefined") {
     const s = document.documentElement.style;
+    const cl = document.documentElement.classList;
     if (pos === "right") {
       s.setProperty("--sb-left", "auto");
-      s.setProperty("--sb-right", "0");
+      s.setProperty("--sb-right", SB_INSET);
       s.setProperty("--sb-order", "9999");
+      cl.add("nav-top");
     } else {
-      s.setProperty("--sb-left", "0");
+      s.setProperty("--sb-left", SB_INSET);
       s.setProperty("--sb-right", "auto");
       s.setProperty("--sb-order", "-1");
+      cl.remove("nav-top");
     }
   }
   emit();

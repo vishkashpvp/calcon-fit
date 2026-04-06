@@ -62,26 +62,26 @@ function Sidebar() {
     getSidebarPositionSnapshot,
     getSidebarPositionServerSnapshot,
   );
-  const isRight = position === "right";
+  const flipped = position === "right";
 
   const toggle = () => setSidebarExpanded(!expanded);
 
   return (
     <>
-      {/* Spacer so main content is not under fixed sidebar */}
       <div
         className="hidden shrink-0 md:block"
         style={{ width: "var(--sb-rail)", order: "var(--sb-order)" } as React.CSSProperties}
         aria-hidden
       />
-
       <div
-        className="bg-background pointer-events-none fixed inset-y-0 z-40 hidden h-dvh md:block"
-        style={{
-          width: "var(--sb-rail)",
-          left: "var(--sb-left)",
-          right: "var(--sb-right)",
-        }}
+        className="pointer-events-none fixed inset-y-0 z-40 hidden h-dvh md:block"
+        style={
+          {
+            width: "var(--sb-rail)",
+            left: "var(--sb-left)",
+            right: "var(--sb-right)",
+          } as React.CSSProperties
+        }
         suppressHydrationWarning
       >
         <div className="pointer-events-auto flex h-dvh flex-col p-2">
@@ -108,7 +108,7 @@ function Sidebar() {
                   className="text-muted-foreground hover:text-foreground hover:border-border flex h-9 w-9 items-center justify-center border border-transparent transition-colors"
                   aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
                 >
-                  {(isRight ? !expanded : expanded) ? (
+                  {(flipped ? !expanded : expanded) ? (
                     <ChevronsLeft className="h-4 w-4" />
                   ) : (
                     <ChevronsRight className="h-4 w-4" />
@@ -137,7 +137,7 @@ function Sidebar() {
                       <span
                         className={cn(
                           "bg-accent-violet absolute top-1 bottom-1 w-0.5",
-                          isRight ? "left-0" : "right-0",
+                          flipped ? "left-0" : "right-0",
                         )}
                       />
                     )}
@@ -155,7 +155,7 @@ function Sidebar() {
                       <span
                         className={cn(
                           "border-border bg-popover pointer-events-none absolute z-50 border px-2.5 py-1 text-xs font-medium whitespace-nowrap opacity-0 shadow-lg transition-opacity group-hover:opacity-100",
-                          isRight ? "right-full mr-3" : "left-full ml-3",
+                          flipped ? "right-full mr-3" : "left-full ml-3",
                         )}
                       >
                         {item.label}
@@ -222,9 +222,22 @@ function Sidebar() {
 
 function MobileBar() {
   const pathname = usePathname();
+  const position = useSyncExternalStore(
+    subscribeSidebarPosition,
+    getSidebarPositionSnapshot,
+    getSidebarPositionServerSnapshot,
+  );
+  const isTop = position === "right";
 
   return (
-    <nav className="border-border bg-card/95 fixed inset-x-0 bottom-0 z-50 flex items-center justify-around border-t px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
+    <nav
+      className={cn(
+        "border-border bg-card/95 fixed inset-x-0 z-50 flex items-center justify-around px-1 backdrop-blur-xl md:hidden",
+        isTop
+          ? "top-0 border-b pt-[env(safe-area-inset-top)]"
+          : "bottom-0 border-t pb-[env(safe-area-inset-bottom)]",
+      )}
+    >
       {navItems.map((item) => {
         const active = matchRoute(pathname, item.href);
         return (
@@ -239,7 +252,10 @@ function MobileBar() {
             {active && (
               <motion.div
                 layoutId="mobile-active"
-                className="bg-accent-violet absolute -top-px left-1/2 h-0.5 w-6 -translate-x-1/2"
+                className={cn(
+                  "bg-accent-violet absolute left-1/2 h-0.5 w-6 -translate-x-1/2",
+                  isTop ? "-bottom-px" : "-top-px",
+                )}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}

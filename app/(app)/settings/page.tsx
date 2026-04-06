@@ -11,14 +11,5 @@ export default async function SettingsPage() {
     where: { userId: session.user.id },
   });
 
-  return (
-    <SettingsClient
-      user={{
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image ?? null,
-      }}
-      profile={profile ? JSON.parse(JSON.stringify(profile)) : null}
-    />
-  );
+  return <SettingsClient profile={profile ? JSON.parse(JSON.stringify(profile)) : null} />;
 }

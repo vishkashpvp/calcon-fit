@@ -81,8 +81,6 @@ const STEPS = [
   },
 ] as const;
 
-type StepKey = (typeof STEPS)[number]["key"];
-
 export default function ProfileSetupPage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);

@@ -19,6 +19,8 @@
 # misc
 .DS_Store
 *.pem
+patch.diff
+changes.patch
 
 # debug
 npm-debug.log*

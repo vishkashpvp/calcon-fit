@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
+import { MESSAGES } from "@/config/messages";
 import { z } from "zod";
 
 const kickSchema = z.object({ userId: z.string().min(1) });
 
 export async function POST(req: Request, { params }: { params: Promise<{ code: string }> }) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
 
   const { code } = await params;
   const squad = await prisma.squad.findUnique({ where: { code: code.toUpperCase() } });

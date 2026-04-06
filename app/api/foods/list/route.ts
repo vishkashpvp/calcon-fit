@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNutritionInfoCollection } from "@lib/db/mongodb";
-import { formatErrorResponse } from "@utils/error-handler";
+
+import { MESSAGES } from "@/config/messages";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db/prisma";
+import { headers } from "next/headers";
 
 export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const name = searchParams.get("name") || "";
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = Math.max(1, parseInt(searchParams.get("limit") || "10", 10));
-    const skip = (page - 1) * limit;
-    const collection = getNutritionInfoCollection();
-    const query = name ? { name: { $regex: name, $options: "i" } } : {};
-    const projection = { _id: 1, name: 1, calories: 1, isPlantBased: 1, macros: 1 };
-    const [total, items] = await Promise.all([
-      collection.countDocuments(query),
-      collection.find(query).project(projection).skip(skip).limit(limit).toArray(),
-    ]);
-    return NextResponse.json({ total, page, limit, items });
-  } catch (err) {
-    return formatErrorResponse(err);
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return NextResponse.json({ error: MESSAGES.AUTH.UNAUTHORIZED }, { status: 401 });
   }
+
+  const search = request.nextUrl.searchParams.get("search")?.trim() ?? "";
+  if (search.length < 2) {
+    return NextResponse.json({ data: [] });
+  }
+
+  const foods = await prisma.foodItem.findMany({
+    where: { name: { contains: search, mode: "insensitive" } },
+    take: 20,
+    orderBy: { name: "asc" },
+  });
+
+  return NextResponse.json({ data: foods });
 }

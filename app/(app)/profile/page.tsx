@@ -23,11 +23,6 @@ export default async function ProfilePage() {
     }),
   ]);
 
-  const memberSinceDays = Math.max(
-    1,
-    Math.floor((Date.now() - new Date(profile.createdAt).getTime()) / (1000 * 60 * 60 * 24)),
-  );
-
   return (
     <ProfileClient
       user={{
@@ -37,7 +32,6 @@ export default async function ProfilePage() {
       }}
       profile={JSON.parse(JSON.stringify(profile))}
       totalMealsLogged={totalMealsLogged}
-      memberSinceDays={memberSinceDays}
       recentWeightLogs={JSON.parse(JSON.stringify(recentWeightLogs))}
     />
   );

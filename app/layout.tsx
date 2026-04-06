@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 const accentScript = `try{var k='calconfit-accent',s=localStorage.getItem(k);if(s&&s!=='default'){var p=${JSON.stringify(COLOR_PRESETS.map((c) => ({ id: c.id, l: c.light, d: c.dark })))};var m=p.find(function(x){return x.id===s});if(m){var d=document.documentElement,t=localStorage.getItem('theme'),isDark=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches),v=isDark?m.d:m.l;d.style.setProperty('--accent-violet',v);d.style.setProperty('--bar-fill',v);d.style.setProperty('--primary',v);d.style.setProperty('--primary-foreground','oklch(0.985 0 0)');d.style.setProperty('--ring',v)}}}catch(e){}`;
-const sidebarScript = `try{if(localStorage.getItem('sidebar-expanded')==='false')document.documentElement.style.setProperty('--sb-rail','72px');if(localStorage.getItem('sidebar-position')==='right'){var s=document.documentElement.style;s.setProperty('--sb-left','auto');s.setProperty('--sb-right','0');s.setProperty('--sb-order','9999')}}catch(e){}`;
+const sidebarScript = `try{if(localStorage.getItem('sidebar-expanded')==='false')document.documentElement.style.setProperty('--sb-rail','72px');if(localStorage.getItem('sidebar-position')==='right'){var s=document.documentElement.style;s.setProperty('--sb-left','auto');s.setProperty('--sb-right','max(0px, calc(50vw - 700px))');s.setProperty('--sb-order','9999');document.documentElement.classList.add('nav-top')}}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

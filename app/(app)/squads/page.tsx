@@ -27,5 +27,5 @@ export default async function SquadsPage() {
     role: m.role,
   }));
 
-  return <SquadsClient squads={squads} userId={session.user.id} />;
+  return <SquadsClient squads={squads} />;
 }
