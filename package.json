@@ -31,7 +31,8 @@
     "check-types": "tsc --pretty --noEmit",
     "check-lint": "eslint .",
     "check-format": "prettier . --check",
-    "test-all": "npm run check-format && npm run check-lint && npm run check-types && npm run build"
+    "test-all": "npm run check-format && npm run check-lint && npm run check-types && npm run build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@prisma/adapter-neon": "^7.6.0",
